@@ -4,9 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,15 +44,16 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
 import org.aviran.cookiebar2.CookieBar;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private boolean googleButtonisclicked = false;
     FirebaseUser mUser;
     ProgressDialog progressdialog;
     LinearLayout cardView;
@@ -60,14 +63,14 @@ public class RegisterActivity extends AppCompatActivity {
     public static int RC_SIGN_IN = 1;
     public static String TAG = "Register Activity";
     Button createAccountBtn;
-    EditText usernameET, registerNumberET, rollNumberET, mobileNumberET;
+    EditText  registerNumberET, rollNumberET, mobileNumberET;
     Spinner departmentET;
     CircleImageView avatarImage;
     ConstraintLayout registerLayout;
     ConstraintLayout registerDetailsLayout;
     TextView userEmailTV, greetingsTV, dateOfBirthET, dateContainer;
     String userEmail;
-    String  displayName, registerNumber, rollNumber, mobileNumber, department, date;
+    String displayName, registerNumber, rollNumber, mobileNumber, department, date;
     String googleToken = "";
     Uri userImage;
     ImageButton closeButtonDetails;
@@ -99,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerLayout.setVisibility(View.VISIBLE);
         registerDetailsLayout.setVisibility(View.GONE);
 
-        String[] items = new String[]{"Select your department","Aero","Auto","BioInfo","BioMed","Civil","CSE","ECE","EEE","EIE","ETCE","IT","MECH","MnP"};
+        String[] items = new String[]{"Select your department", "Aero", "Auto", "BioInfo", "BioMed", "Civil", "CSE", "ECE", "EEE", "EIE", "ETCE", "IT", "MECH", "MnP"};
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items);
         departmentET.setAdapter(adapter);
         signInButton.setSize(SignInButton.SIZE_WIDE);
@@ -179,24 +182,23 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void subscribeToTopic() {
 
-            FirebaseMessaging.getInstance().subscribeToTopic("B2CNotification")
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            String msg = "Subscribed";
-                            if (!task.isSuccessful()) {
-                                msg = "Failed to subscribe";
-                                Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
-                            }
-                            else{
-                                Log.d(TAG, msg);
-                                startActivity(new Intent(RegisterActivity.this, Home.class));
-                                progressdialog.dismiss();
-                                finish();
-                            }
-
+        FirebaseMessaging.getInstance().subscribeToTopic("B2CNotification")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "Failed to subscribe";
+                            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d(TAG, msg);
+                            startActivity(new Intent(RegisterActivity.this, Home.class));
+                            progressdialog.dismiss();
+                            finish();
                         }
-                    });
+
+                    }
+                });
 
     }
 
@@ -209,7 +211,7 @@ public class RegisterActivity extends AppCompatActivity {
         user.put("department", department);
         user.put("dateOfBirth", date);
         user.put("email", userEmail);
-        user.put("verified","false");
+        user.put("verified", "false");
         user.put("userId", mUser.getUid());
         user.put("displayName", displayName);
         user.put("displayImage", userImage.toString());
@@ -233,49 +235,46 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("494670039498-vko2fh940bgckba1t8rvuqa2gbv45de0.apps.googleusercontent.com")//getString(R.string.default_web_client_id))
+            .requestIdToken("1058860673477-puka05q76t96drdk573urhdu5j3c32ii.apps.googleusercontent.com")
             .requestEmail()
             .build();
 
 
     private void signIn() {
-        googleButtonisclicked = true;
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-            // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-            if (requestCode == RC_SIGN_IN) {
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                try {
-                    // Google Sign In was successful, authenticate with Firebase
-                    GoogleSignInAccount account = task.getResult(ApiException.class);
-                    mAuth = FirebaseAuth.getInstance();
-                    firebaseAuthWithGoogle(account);
-                    userEmail = account.getEmail();
-                    displayName = account.getDisplayName();
-                    userImage = account.getPhotoUrl();
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                mAuth = FirebaseAuth.getInstance();
+                firebaseAuthWithGoogle(account);
+                userEmail = account.getEmail();
+                displayName = account.getDisplayName();
+                userImage = account.getPhotoUrl();
 
 
-                } catch (ApiException e) {
-                    // Google Sign In failed, update UI appropriately
-                    progressdialog.dismiss();
-                    CookieBar.build(RegisterActivity.this)
-                            .setTitle("Google sign in failed")
-                            .setMessage("Please check your internet connection and try again.")
-                            .setBackgroundColor(R.color.colorPrimary)
-                            .setCookiePosition(CookieBar.TOP)
-                            .show();
-                    Log.w(TAG, "Google sign in failed", e);
-                    googleButtonisclicked = false;
-                }
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                progressdialog.dismiss();
+                CookieBar.build(RegisterActivity.this)
+                        .setTitle("Google sign in failed")
+                        .setMessage("Please check your internet connection and try again.")
+                        .setBackgroundColor(R.color.colorPrimary)
+                        .setCookiePosition(CookieBar.TOP)
+                        .show();
+                Log.w(TAG, "Google sign in failed", e);
             }
+        }
 
     }
 
@@ -304,7 +303,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             boolean isNew = task.getResult().getAdditionalUserInfo().isNewUser();
                             mUser = mAuth.getCurrentUser();
-                            if(isNew){
+                            if (isNew) {
                                 registerLayout.setVisibility(View.GONE);
                                 registerDetailsLayout.setVisibility(View.VISIBLE);
                                 userEmailTV.setText(userEmail);
@@ -312,10 +311,9 @@ public class RegisterActivity extends AppCompatActivity {
                                 Picasso.get()
                                         .load(userImage)
                                         .into(avatarImage);
-                                setUser(displayName,userImage);
-                            }
-                            else{
-                                startActivity(new Intent(RegisterActivity.this,Home.class));
+                                setUser(displayName, userImage);
+                            } else {
+                                startActivity(new Intent(RegisterActivity.this, Home.class));
                                 finish();
                             }
 
@@ -332,10 +330,10 @@ public class RegisterActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-       if(mAuth.getCurrentUser()!=null){
-            startActivity(new Intent(RegisterActivity.this,Home.class));
-           finish();
-       }
+        if (mAuth.getCurrentUser() != null) {
+            startActivity(new Intent(RegisterActivity.this, Home.class));
+            finish();
+        }
 
     }
 

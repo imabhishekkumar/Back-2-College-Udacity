@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.android.imabhishekkumar.back2college.R;
 import com.android.imabhishekkumar.back2college.model.ModelPost;
@@ -30,6 +33,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.aviran.cookiebar2.CookieBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,18 +57,18 @@ public class home_all extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-    FirebaseAuth mAuth;
-    FirebaseUser mUser;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
     private RecyclerView mRecyclerView;
-    PostRecyclerView postRecyclerView;
-    FirebaseFirestore firebaseFirestore;
-    ImageButton infoBtn;
-    private ProgressDialog mProgress;
-    DocumentReference documentReference;
-    final String TAG= "MainActivity";
-    String department;
+    private ConstraintLayout nothingToShow;
+    private CoordinatorLayout coordinatorLayout;
+    private PostRecyclerView postRecyclerView;
+    private FirebaseFirestore firebaseFirestore;
+    private ImageButton infoBtn;
+    private DocumentReference documentReference;
+    final String TAG = "MainActivity";
+    private String department;
 
     public home_all() {
         // Required empty public constructor
@@ -99,32 +104,27 @@ public class home_all extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fragment_all, container, false);
-        mProgress = new ProgressDialog(getContext());
-        // fab = findViewById(R.id.fab);
-        // fab.hide();
         infoBtn = view.findViewById(R.id.info_Button);
         mAuth = FirebaseAuth.getInstance();
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mUser = mAuth.getCurrentUser();
+        nothingToShow = view.findViewById(R.id.nothingToShow);
+        coordinatorLayout = view.findViewById(R.id.coordinatorLayout);
         final List<ModelPost> modelList = new ArrayList<>();
-        mProgress.setMessage("Please wait");
-        mProgress.show();
         firebaseFirestore = FirebaseFirestore.getInstance();
         documentReference = firebaseFirestore.collection("users").document(mUser.getUid());
-       // getPost(modelList);
-
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        department=task.getResult().get("department").toString();
+                        department = task.getResult().get("department").toString();
                         getPost(modelList);
+
                     } else {
                         Log.d("onComplete", "Document does'nt exists");
                     }
@@ -147,9 +147,11 @@ public class home_all extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        coordinatorLayout.setVisibility(View.VISIBLE);
+                        nothingToShow.setVisibility(View.GONE);
                         final ModelPost modelPost = new ModelPost();
                         modelPost.setPost(document.getString("details"));
-                        Log.d("Time",document.getString("time"));
+                        Log.d("Time", document.getString("time"));
                         modelPost.setTimestamp(document.getLong("timestamp"));
                         if (document.getString("multimediaURL") != null) {
                             modelPost.setWebLink(document.getString("multimediaURL"));
@@ -160,55 +162,24 @@ public class home_all extends Fragment {
                         modelPost.setUserName(document.getString("name"));
 
                         modelList.add(modelPost);
-
-                        //Collections.reverse(modelList);
                         postRecyclerView = new PostRecyclerView(getContext(), modelList);
                         mRecyclerView.setAdapter(postRecyclerView);
+
                         postRecyclerView.notifyDataSetChanged();
-                        mProgress.dismiss();
+
                     }
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }
+
         });
-        /*
-        firebaseFirestore.collection("posts")
-                .orderBy("time", Query.Direction.DESCENDING)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                final ModelPost modelPost = new ModelPost();
-                                modelPost.setPost(document.getString("details"));
-                                Log.d("Time",document.getString("time"));
-                                modelPost.setTimestamp(document.getLong("timestamp"));
-                                if (document.getString("multimediaURL") != null) {
-                                    modelPost.setWebLink(document.getString("multimediaURL"));
-                                    Log.d("web", document.getString("multimediaURL"));
+/*
+        if (modelList.size() == 0) {
 
-                                }
-                                modelPost.setAvatarURL(document.getString("avatar"));
-                                modelPost.setUserName(document.getString("name"));
-
-                                modelList.add(modelPost);
-
-                                //Collections.reverse(modelList);
-                                postRecyclerView = new PostRecyclerView(getContext(), modelList);
-                                mRecyclerView.setAdapter(postRecyclerView);
-                                postRecyclerView.notifyDataSetChanged();
-                                mProgress.dismiss();
-                            }
-
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-
-                    }
-                });
-*/
+            coordinatorLayout.setVisibility(View.GONE);
+            nothingToShow.setVisibility(View.VISIBLE);
+        }*/
 
     }
 
@@ -229,9 +200,9 @@ public class home_all extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
     @Override
     public void onDestroy() {
-        mProgress.dismiss();
         super.onDestroy();
     }
 
@@ -241,6 +212,7 @@ public class home_all extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -248,6 +220,7 @@ public class home_all extends Fragment {
             startActivity(new Intent(getContext(), RegisterActivity.class));
 
     }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

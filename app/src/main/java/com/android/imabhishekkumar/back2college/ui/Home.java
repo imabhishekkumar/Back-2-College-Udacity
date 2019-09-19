@@ -23,25 +23,27 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class Home extends AppCompatActivity implements home_all.OnFragmentInteractionListener, home_department.OnFragmentInteractionListener,home_profile.OnFragmentInteractionListener {
-    FirebaseAuth auth;
+public class Home extends AppCompatActivity implements home_all.OnFragmentInteractionListener, home_department.OnFragmentInteractionListener, home_profile.OnFragmentInteractionListener {
+
     FirebaseFirestore firebaseFirestore;
     DocumentReference documentReference;
+    FirebaseAuth mAuth;
     FirebaseUser user;
     FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this,getSupportFragmentManager());
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        auth = FirebaseAuth.getInstance();
-        fab=findViewById(R.id.fab);
-        user= auth.getCurrentUser();
-        firebaseFirestore=FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        fab = findViewById(R.id.fab);
+        user = mAuth.getCurrentUser();
+        firebaseFirestore = FirebaseFirestore.getInstance();
         final FloatingActionButton fab = findViewById(R.id.fab);
         documentReference = firebaseFirestore.collection("users").document(user.getUid());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -64,6 +66,15 @@ public class Home extends AppCompatActivity implements home_all.OnFragmentIntera
                 startActivity(new Intent(Home.this, AddPost.class));
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (user == null) {
+            startActivity(new Intent(Home.this, RegisterActivity.class));
+            finish();
+        }
     }
 
     @Override

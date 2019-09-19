@@ -58,7 +58,7 @@ public class home_department extends Fragment {
     PostRecyclerView postRecyclerView;
     FirebaseFirestore firebaseFirestore;
     ImageButton infoBtn;
-    private ProgressDialog mProgress;
+    //private ProgressDialog mProgress;
     DocumentReference documentReference;
     final String TAG= "MainActivity";
     String department;
@@ -104,9 +104,8 @@ public class home_department extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mUser = mAuth.getCurrentUser();
         final List<ModelPost> modelList = new ArrayList<>();
-        mProgress = new ProgressDialog(getContext());
-        mProgress.setMessage("Please wait");
-        mProgress.show();
+        //mProgress = ProgressDialog.show(getContext(), "Please wait", "Fetching from database");
+
         firebaseFirestore = FirebaseFirestore.getInstance();
         documentReference = firebaseFirestore.collection("users").document(mUser.getUid());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -146,7 +145,7 @@ public class home_department extends Fragment {
                         postRecyclerView = new PostRecyclerView(getContext(), modelList);
                         mRecyclerView.setAdapter(postRecyclerView);
                         postRecyclerView.notifyDataSetChanged();
-                        mProgress.dismiss();
+                        //mProgress.dismiss();
                     }
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
