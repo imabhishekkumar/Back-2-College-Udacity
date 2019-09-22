@@ -3,7 +3,7 @@
     package="com.android.imabhishekkumar.back2college">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
+        <service android:name=".service.notification">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <activity
             android:name="com.android.imabhishekkumar.back2college.ui.Home"
             android:label="@string/title_activity_home"
@@ -26,9 +31,6 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name="com.android.imabhishekkumar.back2college.ui.info"
-            android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
             android:name="com.android.imabhishekkumar.back2college.ui.AddPost"
             android:theme="@style/Theme.Design.Light.NoActionBar"
@@ -46,6 +48,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -1,13 +1,16 @@
 package com.android.imabhishekkumar.back2college.ui;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -44,23 +47,22 @@ public class AddPost extends AppCompatActivity {
     ConstraintLayout background;
     EditText editText;
     ImageButton goBackBtn, addMediaBtn;
-    ImageButton addButton,filterButton;
+    ImageButton addButton, filterButton;
     ImageView wv;
     FirebaseAuth auth;
     Uri mImageUri;
-    LinearLayout layoutBottomSheet,checkBoxes;
+    LinearLayout layoutBottomSheet, checkBoxes;
     BottomSheetBehavior sheetBehavior;
     Button bsSubmit;
     ProgressDialog mProgress;
-    CheckBox all,aero,auto,bioInfo,bioMed,civil,cse,ece,eee,eie,etce,it,mech,mnp;
+    CheckBox all, aero, auto, bioInfo, bioMed, civil, cse, ece, eee, eie, etce, it, mech, mnp;
     FirebaseFirestore firebaseFirestore;
     Map<String, Object> posts = new HashMap<>();
     Map<String, Object> userposts = new HashMap<>();
     String postText, postMultimediaURL, avatarURL;
-    private StorageReference mStorageRef, postsVideos, postImages;
+    private StorageReference mStorageRef, postImages;
     private final static int gallerycode = 1;
-    private FirebaseFunctions mFunctions;
-    ArrayList<String> selectedDepartment=new ArrayList<>();
+    ArrayList<String> selectedDepartment = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,28 +77,26 @@ public class AddPost extends AppCompatActivity {
         wv = findViewById(R.id.addPostWebView);
         addButton = findViewById(R.id.addPost);
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        postsVideos = mStorageRef.child("videos/");
         firebaseFirestore = FirebaseFirestore.getInstance();
-        mFunctions = FirebaseFunctions.getInstance();
         filterButton = findViewById(R.id.filters);
         layoutBottomSheet = findViewById(R.id.linearBottomSheet);
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-        bsSubmit= findViewById(R.id.bs_submit_btn);
-        all= findViewById(R.id.allCB);
-        aero= findViewById(R.id.aeroCB);
-        auto= findViewById(R.id.autoCB);
-        bioInfo= findViewById(R.id.bioInfoCB);
-        bioMed= findViewById(R.id.bioMedCB);
-        civil= findViewById(R.id.civilCB);
-        cse= findViewById(R.id.cseCB);
-        ece= findViewById(R.id.eceCB);
-        eee= findViewById(R.id.eeeCB);
-        eie= findViewById(R.id.eieCB);
-        etce= findViewById(R.id.etceCB);
-        it= findViewById(R.id.itCB);
-        mech= findViewById(R.id.mechCB);
-        mnp= findViewById(R.id.mnpCB);
-        checkBoxes=findViewById(R.id.checkBoxes);
+        bsSubmit = findViewById(R.id.bs_submit_btn);
+        all = findViewById(R.id.allCB);
+        aero = findViewById(R.id.aeroCB);
+        auto = findViewById(R.id.autoCB);
+        bioInfo = findViewById(R.id.bioInfoCB);
+        bioMed = findViewById(R.id.bioMedCB);
+        civil = findViewById(R.id.civilCB);
+        cse = findViewById(R.id.cseCB);
+        ece = findViewById(R.id.eceCB);
+        eee = findViewById(R.id.eeeCB);
+        eie = findViewById(R.id.eieCB);
+        etce = findViewById(R.id.etceCB);
+        it = findViewById(R.id.itCB);
+        mech = findViewById(R.id.mechCB);
+        mnp = findViewById(R.id.mnpCB);
+        checkBoxes = findViewById(R.id.checkBoxes);
 
         checkBoxes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,8 +111,8 @@ public class AddPost extends AppCompatActivity {
             }
         });
 
-        Log.d("Details",auth.getCurrentUser().getDisplayName());
-        Log.d("Details",auth.getCurrentUser().getPhotoUrl().toString());
+        Log.d("Details", auth.getCurrentUser().getDisplayName());
+        Log.d("Details", auth.getCurrentUser().getPhotoUrl().toString());
         background.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,25 +129,25 @@ public class AddPost extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_PICK,
-                                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                            intent.setType("image/* video/*");
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType("image/* video/* ");
                 startActivityForResult(intent, gallerycode);
             }
         });
-goBackBtn.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        startActivity(new Intent(AddPost.this,Home.class));
-        finish();
-    }
-});
-bsSubmit.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        checkDepartments();
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-    }
-});
+        goBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(AddPost.this, Home.class));
+                finish();
+            }
+        });
+        bsSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkDepartments();
+                sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+        });
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -162,28 +162,28 @@ bsSubmit.setOnClickListener(new View.OnClickListener() {
                     postMultimediaURL = mImageUri.toString();
                     posts.put("details", postText);
                     posts.put("name", auth.getCurrentUser().getDisplayName());
-                    posts.put("avatar",auth.getCurrentUser().getPhotoUrl().toString());
+                    posts.put("avatar", auth.getCurrentUser().getPhotoUrl().toString());
                     posts.put("time", formatteddate);
-                    posts.put("uid",auth.getCurrentUser().getUid());
-                    if(selectedDepartment==null||selectedDepartment.size()==0){
-                        posts.put("postTo","all");
-                    }else{
-                        posts.put("postTo",selectedDepartment);
+                    posts.put("uid", auth.getCurrentUser().getUid());
+                    if (selectedDepartment == null || selectedDepartment.size() == 0) {
+                        posts.put("postTo", "all");
+                    } else {
+                        posts.put("postTo", selectedDepartment);
                     }
-                    posts.put("timestamp",new Date().getTime());
+                    posts.put("timestamp", new Date().getTime());
                     addImageToDB();
                 } else {
                     posts.put("details", postText);
                     posts.put("name", auth.getCurrentUser().getDisplayName());
-                    posts.put("avatar",auth.getCurrentUser().getPhotoUrl().toString());
+                    posts.put("avatar", auth.getCurrentUser().getPhotoUrl().toString());
                     posts.put("time", formatteddate);
-                    posts.put("uid",auth.getCurrentUser().getUid());
-                    if(selectedDepartment==null||selectedDepartment.size()==0){
-                        posts.put("postTo","all");
-                    }else{
+                    posts.put("uid", auth.getCurrentUser().getUid());
+                    if (selectedDepartment == null || selectedDepartment.size() == 0) {
+                        posts.put("postTo", "all");
+                    } else {
                         posts.put("postTo", selectedDepartment);
                     }
-                    posts.put("timestamp",new Date().getTime());
+                    posts.put("timestamp", new Date().getTime());
                     pushToDB();
                 }
 
@@ -212,67 +212,54 @@ bsSubmit.setOnClickListener(new View.OnClickListener() {
 
     public void checkDepartments() {
         selectedDepartment.clear();
-        if(aero.isChecked())
-        {
+        if (aero.isChecked()) {
             selectedDepartment.add(getString(R.string.aero));
             all.setChecked(false);
         }
-        if(auto.isChecked())
-        {
+        if (auto.isChecked()) {
             selectedDepartment.add(getString(R.string.auto));
             all.setChecked(false);
         }
-        if(bioInfo.isChecked())
-        {
+        if (bioInfo.isChecked()) {
             selectedDepartment.add(getString(R.string.bioinfo));
             all.setChecked(false);
         }
-        if(bioMed.isChecked())
-        {
+        if (bioMed.isChecked()) {
             selectedDepartment.add(getString(R.string.biomed));
             all.setChecked(false);
         }
-        if(civil.isChecked())
-        {
+        if (civil.isChecked()) {
             selectedDepartment.add(getString(R.string.civil));
             all.setChecked(false);
         }
-        if(cse.isChecked())
-        {
+        if (cse.isChecked()) {
             selectedDepartment.add(getString(R.string.cse));
             all.setChecked(false);
         }
-        if(ece.isChecked())
-        {
+        if (ece.isChecked()) {
             selectedDepartment.add(getString(R.string.ece));
             all.setChecked(false);
         }
-        if(eee.isChecked())
-        {
+        if (eee.isChecked()) {
             selectedDepartment.add(getString(R.string.eee));
         }
-        if(eie.isChecked())
-        {
+        if (eie.isChecked()) {
             selectedDepartment.add(getString(R.string.eie));
             all.setChecked(false);
         }
-        if(etce.isChecked())
-        {
+        if (etce.isChecked()) {
             selectedDepartment.add(getString(R.string.etce));
             all.setChecked(false);
         }
-        if(it.isChecked())
-        {
+        if (it.isChecked()) {
             selectedDepartment.add(getString(R.string.it));
             all.setChecked(false);
         }
-        if(mech.isChecked())
-        {
+        if (mech.isChecked()) {
             selectedDepartment.add(getString(R.string.mech));
             all.setChecked(false);
         }
-        if(mnp.isChecked())
-        {
+        if (mnp.isChecked()) {
             selectedDepartment.add(getString(R.string.mnp));
             all.setChecked(false);
         }
@@ -299,6 +286,7 @@ bsSubmit.setOnClickListener(new View.OnClickListener() {
                 .getHttpsCallable("createTodo");
 
     }
+
     public void toggleBottomSheet() {
         all.setChecked(true);
         if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
@@ -331,7 +319,7 @@ bsSubmit.setOnClickListener(new View.OnClickListener() {
                     pushToDB();
 
                 } else {
-                   Log.d("upload failed: " , task.getException().getMessage());
+                    Log.d("upload failed: ", task.getException().getMessage());
                 }
             }
         });
@@ -353,7 +341,7 @@ bsSubmit.setOnClickListener(new View.OnClickListener() {
             wv.setVisibility(View.VISIBLE);
             Picasso.get()
                     .load(mImageUri.toString())
-            .into(wv);
+                    .into(wv);
 
         }
     }

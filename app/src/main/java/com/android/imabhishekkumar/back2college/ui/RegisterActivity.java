@@ -186,6 +186,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(department);
                         String msg = "Subscribed";
                         if (!task.isSuccessful()) {
                             msg = "Failed to subscribe";

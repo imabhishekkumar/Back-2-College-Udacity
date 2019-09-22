@@ -1,14 +1,13 @@
 package com.android.imabhishekkumar.back2college.ui;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import com.android.imabhishekkumar.back2college.R;
 import com.android.imabhishekkumar.back2college.model.ModelPost;
@@ -30,6 +29,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -62,7 +62,7 @@ public class home_all extends Fragment {
     private FirebaseUser mUser;
     private RecyclerView mRecyclerView;
     private ConstraintLayout nothingToShow;
-    private CoordinatorLayout coordinatorLayout;
+    private RelativeLayout relativeLayout;
     private PostRecyclerView postRecyclerView;
     private FirebaseFirestore firebaseFirestore;
     private ImageButton infoBtn;
@@ -112,9 +112,13 @@ public class home_all extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mUser = mAuth.getCurrentUser();
         nothingToShow = view.findViewById(R.id.nothingToShow);
-        coordinatorLayout = view.findViewById(R.id.coordinatorLayout);
+        relativeLayout = view.findViewById(R.id.relativeLayout);
         final List<ModelPost> modelList = new ArrayList<>();
         firebaseFirestore = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .build();
+        firebaseFirestore.setFirestoreSettings(settings);
         documentReference = firebaseFirestore.collection("users").document(mUser.getUid());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -133,7 +137,21 @@ public class home_all extends Fragment {
                 }
             }
         });
+        if(!isConnectionAvailable()){
+            CookieBar.build(getActivity())
+                    .setBackgroundColor(R.color.colorPrimaryDark)
+                    .setTitle("Internet not available")
+                    .setMessage("Showing cached data")
+                    .show();
+        }
         return view;
+    }
+    public boolean isConnectionAvailable() {
+
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+
     }
 
     private void getPost(final List<ModelPost> modelList) {
@@ -147,7 +165,7 @@ public class home_all extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        coordinatorLayout.setVisibility(View.VISIBLE);
+                        relativeLayout.setVisibility(View.VISIBLE);
                         nothingToShow.setVisibility(View.GONE);
                         final ModelPost modelPost = new ModelPost();
                         modelPost.setPost(document.getString("details"));
@@ -174,12 +192,7 @@ public class home_all extends Fragment {
             }
 
         });
-/*
-        if (modelList.size() == 0) {
 
-            coordinatorLayout.setVisibility(View.GONE);
-            nothingToShow.setVisibility(View.VISIBLE);
-        }*/
 
     }
 

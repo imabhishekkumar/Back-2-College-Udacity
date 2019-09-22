@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
 import com.android.imabhishekkumar.back2college.R;
 import com.android.imabhishekkumar.back2college.model.ModelPost;
@@ -26,6 +28,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -52,28 +55,22 @@ public class home_department extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    FirebaseAuth mAuth;
-    FirebaseUser mUser;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
     private RecyclerView mRecyclerView;
-    PostRecyclerView postRecyclerView;
-    FirebaseFirestore firebaseFirestore;
-    ImageButton infoBtn;
-    //private ProgressDialog mProgress;
-    DocumentReference documentReference;
-    final String TAG= "MainActivity";
-    String department;
+    private PostRecyclerView postRecyclerView;
+    private FirebaseFirestore firebaseFirestore;
+    private ConstraintLayout nothingToShow;
+    private RelativeLayout relativeLayout;
+    private DocumentReference documentReference;
+    final String TAG = "MainActivity";
+    private String department;
+
     public home_department() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment home_department.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static home_department newInstance(String param1, String param2) {
         home_department fragment = new home_department();
@@ -97,39 +94,46 @@ public class home_department extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_home_department, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_department, container, false);
         mAuth = FirebaseAuth.getInstance();
         mRecyclerView = view.findViewById(R.id.recyclerViewDept);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mUser = mAuth.getCurrentUser();
         final List<ModelPost> modelList = new ArrayList<>();
-        //mProgress = ProgressDialog.show(getContext(), "Please wait", "Fetching from database");
-
+        nothingToShow = view.findViewById(R.id.deptNothingToShow);
+        relativeLayout = view.findViewById(R.id.deptRelativeLayout);
         firebaseFirestore = FirebaseFirestore.getInstance();
         documentReference = firebaseFirestore.collection("users").document(mUser.getUid());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                department=task.getResult().get("department").toString();
+                department = task.getResult().get("department").toString();
                 getPost(modelList);
-        }});
+            }
+        });
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .build();
+        firebaseFirestore.setFirestoreSettings(settings);
 
-        return view ;
+        return view;
     }
+
     private void getPost(final List<ModelPost> modelList) {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference collRef = rootRef.collection("posts");
-        Query q= collRef.whereArrayContains("postTo",department);
-       // Query query = collRef.whereEqualTo("postTo", department);
+        Query q = collRef.whereArrayContains("postTo", department);
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        relativeLayout.setVisibility(View.VISIBLE);
+                        nothingToShow.setVisibility(View.GONE);
                         final ModelPost modelPost = new ModelPost();
                         modelPost.setPost(document.getString("details"));
-                        Log.d("Time",document.getString("time"));
+                        Log.d("Time", document.getString("time"));
                         modelPost.setTimestamp(document.getLong("timestamp"));
                         if (document.getString("multimediaURL") != null) {
                             modelPost.setWebLink(document.getString("multimediaURL"));
@@ -141,11 +145,9 @@ public class home_department extends Fragment {
 
                         modelList.add(modelPost);
 
-                        //Collections.reverse(modelList);
                         postRecyclerView = new PostRecyclerView(getContext(), modelList);
                         mRecyclerView.setAdapter(postRecyclerView);
                         postRecyclerView.notifyDataSetChanged();
-                        //mProgress.dismiss();
                     }
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
@@ -154,15 +156,10 @@ public class home_department extends Fragment {
         });
 
 
-
-
     }
+
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+
 
     @Override
     public void onAttach(Context context) {
