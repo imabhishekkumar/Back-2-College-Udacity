@@ -1,55 +1,88 @@
 package com.android.imabhishekkumar.back2college.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
-public class ModelPost implements Serializable {
-    private String userName;
-    private String post;
-    private String webLink;
-    private String avatarURL;
+public class ModelPost  {
+    private String name;
+    private String details;
+    private String multimediaURL;
+    private String avatar;
+    private ArrayList<String> postTo;
+    private String uid;
+    private String time;
     private Long timestamp;
 
     public ModelPost() {
     }
 
-    public ModelPost(String userName, String post, String webLink, String avatarURL, Long timestamp) {
-        this.userName = userName;
-        this.post = post;
-        this.webLink = webLink;
-        this.avatarURL = avatarURL;
+    public ModelPost(String name, String details, String multimediaURL, String avatar, ArrayList<String> postTo, String uid, String time, Long timestamp) {
+        this.name = name;
+        this.details = details;
+        this.multimediaURL = multimediaURL;
+        this.avatar = avatar;
+        this.postTo = postTo;
+        this.uid = uid;
+        this.time = time;
         this.timestamp = timestamp;
     }
 
-    public String getUserName() {
-        return userName;
+    public ArrayList<String> getPostTo() {
+        return postTo;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setPostTo(ArrayList<String> postTo) {
+        this.postTo = postTo;
     }
 
-    public String getPost() {
-        return post;
+    public String getName() {
+        return name;
     }
 
-    public void setPost(String post) {
-        this.post = post;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getWebLink() {
-        return webLink;
+    public String getDetails() {
+        return details;
     }
 
-    public void setWebLink(String webLink) {
-        this.webLink = webLink;
+    public void setDetails(String details) {
+        this.details = details;
     }
 
-    public String getAvatarURL() {
-        return avatarURL;
+    public String getMultimediaURL() {
+        return multimediaURL;
     }
 
-    public void setAvatarURL(String avatarURL) {
-        this.avatarURL = avatarURL;
+    public void setMultimediaURL(String multimediaURL) {
+        this.multimediaURL = multimediaURL;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public Long getTimestamp() {

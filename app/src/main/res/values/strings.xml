@@ -37,6 +37,8 @@
     <string name="mnp">MnP</string>
     <string name="nothing_to_show">Nothing to show</string>
     <string name="welcome_n_back_2_college">Welcome\nBack to College</string>
+    <string name="delete">Delete</string>
+    <string name="pin_to_homescreen">Pin to homescreen</string>
 
 
 </resources>

@@ -37,8 +37,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -166,7 +168,7 @@ public class AddPost extends AppCompatActivity {
                     posts.put("time", formatteddate);
                     posts.put("uid", auth.getCurrentUser().getUid());
                     if (selectedDepartment == null || selectedDepartment.size() == 0) {
-                        posts.put("postTo", "all");
+                        posts.put("postTo", Arrays.asList("all"));
                     } else {
                         posts.put("postTo", selectedDepartment);
                     }
@@ -179,7 +181,7 @@ public class AddPost extends AppCompatActivity {
                     posts.put("time", formatteddate);
                     posts.put("uid", auth.getCurrentUser().getUid());
                     if (selectedDepartment == null || selectedDepartment.size() == 0) {
-                        posts.put("postTo", "all");
+                        posts.put("postTo", Arrays.asList("all"));
                     } else {
                         posts.put("postTo", selectedDepartment);
                     }
