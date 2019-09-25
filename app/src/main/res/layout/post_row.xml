@@ -5,9 +5,7 @@
     android:id="@+id/post_rowCV"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
+    android:layout_margin="8dp"
     android:elevation="16dp"
     app:cardBackgroundColor="@color/textColor"
     app:cardCornerRadius="5dp"
@@ -56,13 +54,7 @@
             android:background="@color/backgroundColor"
             app:layout_constraintTop_toBottomOf="@+id/timestamp"
             tools:layout_editor_absoluteX="16dp" />
-        <!--
-                           android:autoLink="web"
-                           android:textColorHint="@color/textColorBlack"
-                           android:textColor="@color/textColorBlack"
-                           android:textColorHighlight="@color/colorButtonSecondary"
-                           android:textColorLink="@color/colorGradient"
-                           android:textIsSelectable="true"-->
+
         <TextView
             android:id="@+id/postContentTV"
             android:layout_width="match_parent"
@@ -89,7 +81,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:padding="8dp"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:src="@drawable/loading"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:text="just now"
+            android:text="@string/sample_relative_time"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/circleImageView"
             app:layout_constraintTop_toBottomOf="@+id/nameTV" />

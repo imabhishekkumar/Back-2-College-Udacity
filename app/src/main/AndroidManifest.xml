@@ -12,6 +12,13 @@
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
+        <receiver android:name=".widget.WidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
+        </receiver>
         <service android:name=".service.notification">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

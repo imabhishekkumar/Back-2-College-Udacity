@@ -1,5 +1,7 @@
 package com.android.imabhishekkumar.back2college.utils;
 
+import android.appwidget.AppWidgetManager;
+import android.content.Intent;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -7,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 
 import com.android.imabhishekkumar.back2college.R;
+import com.android.imabhishekkumar.back2college.widget.WidgetProvider;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -39,11 +42,12 @@ public class MenuHandler implements PopupMenu.OnMenuItemClickListener {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                               
+
                             }
                         });
                 break;
-
+            case R.id.pin:
+                break;
 
             default:
         }

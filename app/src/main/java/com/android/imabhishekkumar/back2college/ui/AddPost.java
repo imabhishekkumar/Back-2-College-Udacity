@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,7 +50,8 @@ public class AddPost extends AppCompatActivity {
     ConstraintLayout background;
     EditText editText;
     ImageButton goBackBtn, addMediaBtn;
-    ImageButton addButton, filterButton;
+    ImageButton  filterButton;
+    FloatingActionButton addButton;
     ImageView wv;
     FirebaseAuth auth;
     Uri mImageUri;
