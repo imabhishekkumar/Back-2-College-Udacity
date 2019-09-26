@@ -1,27 +1,16 @@
 <resources>
     <string name="app_name">Back 2 College</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">DEAN</string>
     <string name="registerNumber_text">Register Number</string>
-    <string name="username_text">Username</string>
-    <string name="login_btn">Login</string>
-    <string name="login_create_account">Don\'t have an account? Sign up here</string>
     <string name="register_btn">Create Account</string>
     <string name="select_date">Date of birth</string>
     <string name="department">Department</string>
     <string name="mobileNumber">Mobile number</string>
     <string name="rollNumber_text">Roll Number</string>
-    <string name="facebook_app_id">277625696470245</string>
-    <string name="fb_login_protocol_scheme">fb277625696470245</string>
-    <string name="logout">Log out</string>
-    <string name="profile">Profile</string>
     <string name="title_activity_home">Home</string>
     <string name="tab_text_1">All</string>
     <string name="tab_text_2">Department</string>
     <string name="tab_text_3">Profile</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="aero">Aero</string>
     <string name="auto">Auto</string>
     <string name="bioinfo">BioInfo</string>
@@ -36,7 +25,6 @@
     <string name="mech">MECH</string>
     <string name="mnp">MnP</string>
     <string name="nothing_to_show">Nothing to show</string>
-    <string name="welcome_n_back_2_college">Welcome\nBack to College</string>
     <string name="delete">Delete</string>
     <string name="pin_to_homescreen">Pin to homescreen</string>
     <string name="sample_relative_time">just now</string>
