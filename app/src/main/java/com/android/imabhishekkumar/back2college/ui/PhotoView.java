@@ -7,10 +7,11 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.android.imabhishekkumar.back2college.R;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 public class PhotoView extends AppCompatActivity {
-ImageView imageView;
+    ImageView imageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,9 +19,10 @@ ImageView imageView;
         imageView = findViewById(R.id.photoView);
         Intent intent = getIntent();
         String photoURL = intent.getStringExtra("imageUrl");
-        Picasso.get()
+        Glide.with(getApplicationContext())
                 .load(photoURL)
                 .placeholder(R.drawable.loading)
                 .into(imageView);
+
     }
 }

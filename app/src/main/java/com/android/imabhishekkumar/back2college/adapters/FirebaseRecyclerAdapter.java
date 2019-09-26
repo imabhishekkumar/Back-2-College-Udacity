@@ -1,6 +1,7 @@
 package com.android.imabhishekkumar.back2college.adapters;
 
 import android.content.Intent;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -16,11 +17,11 @@ import com.android.imabhishekkumar.back2college.R;
 import com.android.imabhishekkumar.back2college.model.ModelPost;
 import com.android.imabhishekkumar.back2college.ui.PhotoView;
 import com.android.imabhishekkumar.back2college.utils.MenuHandler;
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FirebaseRecyclerAdapter extends FirestoreRecyclerAdapter<ModelPost, FirebaseRecyclerAdapter.PostHolder> {
@@ -46,14 +47,16 @@ public class FirebaseRecyclerAdapter extends FirestoreRecyclerAdapter<ModelPost,
 
         if (webURL != null) {
             holder.webView.setVisibility(View.VISIBLE);
-            Picasso.get()
+            Glide.with(holder.webView.getContext())
                     .load(webURL)
                     .placeholder(R.drawable.loading)
                     .into(holder.webView);
+
         }
-        Picasso.get()
+        Glide.with(holder.avatar.getContext())
                 .load(avatarURL)
                 .into(holder.avatar);
+
         holder.name.setText(username);
         holder.post.setText(postContent);
         holder.time.setReferenceTime(timestamp);
@@ -68,7 +71,7 @@ public class FirebaseRecyclerAdapter extends FirestoreRecyclerAdapter<ModelPost,
         holder.moreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(view, position,parentUId);
+                showPopupMenu(view, position,parentUId,model);
             }
         });
     }
@@ -107,12 +110,12 @@ public class FirebaseRecyclerAdapter extends FirestoreRecyclerAdapter<ModelPost,
         }
     }
 
-    private void showPopupMenu(View view, int position, String parentUId) {
+    private void showPopupMenu(View view, int position, String parentUId, ModelPost modelPost) {
 
         PopupMenu popup = new PopupMenu(view.getContext(), view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.more_options, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MenuHandler(position,parentUId));
+        popup.setOnMenuItemClickListener(new MenuHandler(position,parentUId, view.getContext(),modelPost));
         popup.show();
 
     }

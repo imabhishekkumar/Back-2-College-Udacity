@@ -153,6 +153,7 @@ public class home_department extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if(firebaseRecyclerAdapter!=null)
         firebaseRecyclerAdapter.stopListening();
     }
 

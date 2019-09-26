@@ -3,24 +3,72 @@ package com.android.imabhishekkumar.back2college.widget;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.view.Display;
 import android.widget.RemoteViews;
-
 import com.android.imabhishekkumar.back2college.R;
-import com.android.imabhishekkumar.back2college.model.ModelPost;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.AppWidgetTarget;
+import com.bumptech.glide.request.transition.Transition;
 
-import java.util.List;
 
 public class WidgetProvider extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId, String userName, String avatar, String details,String image) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_post);
-
-            views.setTextViewText(R.id.widget_username,userName);
-            views.setTextViewText(R.id.widget_post_description,details);
+                                int appWidgetId, String name, String details, String avatar, String image) {
+        RemoteViews views;
+        if (image!=null) {
+            views = new RemoteViews(context.getPackageName(), R.layout.widget_post);
+            views.setImageViewUri(R.id.widget_image, Uri.parse(image));
+            views.setTextViewText(R.id.widget_username, name);
+            views.setTextViewText(R.id.widget_post_description, details);
             views.setImageViewUri(R.id.widget_avatar, Uri.parse(avatar));
-            views.setImageViewUri(R.id.widget_image,Uri.parse(image));
+
+            AppWidgetTarget awtAvatar = new AppWidgetTarget(context, R.id.widget_avatar, views, appWidgetId) {
+                @Override
+                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                    super.onResourceReady(resource, transition);
+                }
+            };
+
+
+            Glide.with(context.getApplicationContext())
+                    .asBitmap()
+                    .load(avatar)
+                    .into(awtAvatar);
+
+            AppWidgetTarget awtImage = new AppWidgetTarget(context, R.id.widget_image, views, appWidgetId) {
+                @Override
+                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                    super.onResourceReady(resource, transition);
+                }
+            };
+
+
+            Glide.with(context.getApplicationContext())
+                    .asBitmap()
+                    .load(image)
+                    .override(480, 342)
+                    .into(awtImage);
+        } else {
+            views = new RemoteViews(context.getPackageName(), R.layout.widget_no_img);
+            views.setTextViewText(R.id.widget_ni_username, name);
+            views.setTextViewText(R.id.widget_ni_post_description, details);
+            views.setImageViewUri(R.id.widget_ni_avatar, Uri.parse(avatar));
+
+            AppWidgetTarget awtAvatar = new AppWidgetTarget(context, R.id.widget_ni_avatar, views, appWidgetId) {
+                @Override
+                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                    super.onResourceReady(resource, transition);
+                }
+            };
+
+
+            Glide.with(context.getApplicationContext())
+                    .asBitmap()
+                    .load(avatar)
+                    .into(awtAvatar);
+        }
 
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -30,10 +78,16 @@ public class WidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        SharedPreferences pref = context.getSharedPreferences("MyPref", 0);
+        String name = pref.getString("name", null);
+        String details = pref.getString("details", null);
+        String avatar = pref.getString("avatar", null);
+        String image = pref.getString("image", null);
         for (int appWidgetId : appWidgetIds) {
-            ModelPost modelPost = new ModelPost();
-            updateAppWidget(context, appWidgetManager, appWidgetId, modelPost.getName(), modelPost.getAvatar(),modelPost.getDetails(),modelPost.getMultimediaURL());
+            updateAppWidget(context, appWidgetManager, appWidgetId, name, details, avatar, image);
         }
+
+
     }
 
     @Override

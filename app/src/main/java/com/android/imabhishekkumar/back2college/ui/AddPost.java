@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.imabhishekkumar.back2college.R;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,9 +37,6 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
-
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -343,9 +341,10 @@ public class AddPost extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == gallerycode) {
             mImageUri = data.getData();
             wv.setVisibility(View.VISIBLE);
-            Picasso.get()
+            Glide.with(getApplicationContext())
                     .load(mImageUri.toString())
                     .into(wv);
+
 
         }
     }

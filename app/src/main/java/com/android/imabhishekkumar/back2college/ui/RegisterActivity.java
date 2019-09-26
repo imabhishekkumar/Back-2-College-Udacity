@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.imabhishekkumar.back2college.R;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -41,7 +42,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.squareup.picasso.Picasso;
 
 import org.aviran.cookiebar2.CookieBar;
 
@@ -309,7 +309,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 registerDetailsLayout.setVisibility(View.VISIBLE);
                                 userEmailTV.setText(userEmail);
                                 greetingsTV.setText("Welcome, " + displayName);
-                                Picasso.get()
+                                Glide.with(getApplicationContext())
                                         .load(userImage)
                                         .into(avatarImage);
                                 setUser(displayName, userImage);
