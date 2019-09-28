@@ -1,6 +1,8 @@
 package com.android.imabhishekkumar.back2college.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -8,9 +10,11 @@ import com.android.imabhishekkumar.back2college.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,6 +27,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.aviran.cookiebar2.CookieBar;
+
 public class Home extends AppCompatActivity implements home_all.OnFragmentInteractionListener, home_department.OnFragmentInteractionListener, home_profile.OnFragmentInteractionListener {
 
     FirebaseFirestore firebaseFirestore;
@@ -30,6 +36,7 @@ public class Home extends AppCompatActivity implements home_all.OnFragmentIntera
     FirebaseAuth mAuth;
     FirebaseUser user;
     FloatingActionButton fab;
+    CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +49,7 @@ public class Home extends AppCompatActivity implements home_all.OnFragmentIntera
         tabs.setupWithViewPager(viewPager);
         mAuth = FirebaseAuth.getInstance();
         fab = findViewById(R.id.fab);
+        coordinatorLayout = findViewById(R.id.homeCoordinatorLayout);
         user = mAuth.getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
         final FloatingActionButton fab = findViewById(R.id.fab);
@@ -66,8 +74,19 @@ public class Home extends AppCompatActivity implements home_all.OnFragmentIntera
                 startActivity(new Intent(Home.this, AddPost.class));
             }
         });
+        if(!isConnectionAvailable()){
+            Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, "No internet connection available.", Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
     }
+    public boolean isConnectionAvailable() {
 
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+
+    }
     @Override
     protected void onStart() {
         super.onStart();

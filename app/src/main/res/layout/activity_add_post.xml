@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/addPostCoordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#efefef"
- >
+    android:background="#efefef">
 
     <include layout="@layout/add_post_layout" />
-
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_margin="@dimen/fab_margin"
+        app:borderWidth="0dp"
+        app:srcCompat="@drawable/baseline_send_24"/>
     <!-- Adding bottom sheet after main content -->
     <include layout="@layout/bottom_sheet" />
 

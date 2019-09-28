@@ -105,14 +105,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addPost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:backgroundTint="@color/colorPrimary"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@drawable/baseline_send_24"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ImageView

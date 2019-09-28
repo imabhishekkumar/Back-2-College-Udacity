@@ -4,12 +4,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +32,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,6 +40,9 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.aviran.cookiebar2.CookieBar;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +56,7 @@ public class AddPost extends AppCompatActivity {
     ImageButton goBackBtn, addMediaBtn;
     ImageButton  filterButton;
     FloatingActionButton addButton;
+    CoordinatorLayout coordinatorLayout;
     ImageView wv;
     FirebaseAuth auth;
     Uri mImageUri;
@@ -84,6 +91,7 @@ public class AddPost extends AppCompatActivity {
         layoutBottomSheet = findViewById(R.id.linearBottomSheet);
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
         bsSubmit = findViewById(R.id.bs_submit_btn);
+        coordinatorLayout = findViewById(R.id.addPostCoordinatorLayout);
         all = findViewById(R.id.allCB);
         aero = findViewById(R.id.aeroCB);
         auto = findViewById(R.id.autoCB);
@@ -192,8 +200,20 @@ public class AddPost extends AppCompatActivity {
 
             }
         });
-    }
+        if(!isConnectionAvailable()){
+            Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, "No internet connection available.", Snackbar.LENGTH_LONG);
+            snackbar.show();
 
+        }
+    }
+    public boolean isConnectionAvailable() {
+
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+
+    }
     private void unCheckAll() {
         selectedDepartment.clear();
         aero.setChecked(false);

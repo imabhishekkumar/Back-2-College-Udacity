@@ -29,6 +29,13 @@
     <string name="pin_to_homescreen">Pin to homescreen</string>
     <string name="sample_relative_time">just now</string>
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="share">Share</string>
+    <string name="confirmDelete">Confirm Delete?</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_back_to_college">Welcome back to college</string>
+    <string name="allow_permission">Allow necessary permission</string>
 
 
 </resources>

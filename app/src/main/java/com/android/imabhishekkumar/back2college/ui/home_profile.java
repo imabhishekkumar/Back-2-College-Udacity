@@ -4,13 +4,26 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.imabhishekkumar.back2college.R;
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +42,26 @@ public class home_profile extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    @BindView(R.id.profileName)
+    TextView nameTV;
+    @BindView(R.id.profileEmail)
+    TextView emailTV;
+    @BindView(R.id.profileDept)
+    TextView deptTV;
+    @BindView(R.id.profileRoll)
+    TextView rollTV;
+    @BindView(R.id.profileDOB)
+    TextView dobTV;
+    @BindView(R.id.profileMobile)
+    TextView mobileTV;
+    @BindView(R.id.profileReg)
+    TextView regTV;
+    @BindView(R.id.profileAvatar)
+    CircleImageView avatarIV;
+    // @BindView(R.id.pass)
+    //ImageView QR;
+    FirebaseAuth firebaseAuth;
+    FirebaseFirestore firebaseFirestore;
 
     private OnFragmentInteractionListener mListener;
 
@@ -36,15 +69,6 @@ public class home_profile extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment home_profile.
-     */
-    // TODO: Rename and change types and number of parameters
     public static home_profile newInstance(String param1, String param2) {
         home_profile fragment = new home_profile();
         Bundle args = new Bundle();
@@ -67,7 +91,35 @@ public class home_profile extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_profile, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_home_profile, container, false);
+        ButterKnife.bind(this, view);
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore.collection("users").document(firebaseAuth.getUid()).addSnapshotListener((documentSnapshot, e) -> {
+            String name = documentSnapshot.get("displayName").toString();
+            String department = "Department: " + documentSnapshot.get("department").toString();
+            String register = documentSnapshot.get("registerNumber").toString();
+            String roll = "Roll number: " + documentSnapshot.get("rollNumber").toString();
+            String email = "Email: " + documentSnapshot.get("email").toString();
+            String mobileNumber = "Phone: " + documentSnapshot.get("mobileNumber").toString();
+            String dateOfBirth = "Date of Birth: " + documentSnapshot.get("dateOfBirth").toString();
+            String avatar = documentSnapshot.get("displayImage").toString();
+            nameTV.setText(name);
+            deptTV.setText(department);
+            regTV.setText(register);
+            rollTV.setText(roll);
+            emailTV.setText(email);
+            mobileTV.setText(mobileNumber);
+            dobTV.setText(dateOfBirth);
+
+
+            Glide.with(view)
+                    .load(avatar)
+                    .into(avatarIV)
+            ;
+        });
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -94,16 +146,6 @@ public class home_profile extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

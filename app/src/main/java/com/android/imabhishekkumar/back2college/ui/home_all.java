@@ -135,22 +135,10 @@ public class home_all extends Fragment {
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
         firebaseFirestore.setFirestoreSettings(settings);
 
-        if(!isConnectionAvailable()){
-            CookieBar.build(getActivity())
-                    .setBackgroundColor(R.color.colorPrimaryDark)
-                    .setTitle("Internet not available")
-                    .setMessage("Showing cached data")
-                    .show();
-        }
+
         return view;
     }
-    public boolean isConnectionAvailable() {
 
-        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
