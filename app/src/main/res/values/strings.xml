@@ -36,6 +36,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome_back_to_college">Welcome back to college</string>
     <string name="allow_permission">Allow necessary permission</string>
+    <string name="signout">Sign Out</string>
 
 
 </resources>

@@ -1,6 +1,7 @@
 package com.android.imabhishekkumar.back2college.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -20,6 +21,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,8 +64,8 @@ public class home_profile extends Fragment {
     TextView regTV;
     @BindView(R.id.profileAvatar)
     CircleImageView avatarIV;
-    // @BindView(R.id.pass)
-    //ImageView QR;
+    @BindView(R.id.profileQR)
+    ImageView QR;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
 
@@ -116,8 +122,19 @@ public class home_profile extends Fragment {
 
             Glide.with(view)
                     .load(avatar)
-                    .into(avatarIV)
-            ;
+                    .into(avatarIV);
+
+            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+            try {
+
+                BitMatrix bitMatrix = multiFormatWriter.encode(register, BarcodeFormat.QR_CODE, 200, 200);
+                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+                QR.setImageBitmap(bitmap);
+            } catch (WriterException w) {
+                w.printStackTrace();
+            }
+
         });
         return view;
     }
