@@ -37,6 +37,9 @@
     <string name="welcome_back_to_college">Welcome back to college</string>
     <string name="allow_permission">Allow necessary permission</string>
     <string name="signout">Sign Out</string>
+    <string name="photo_view">This is photoView</string>
+    <string name="profileQR">QR for profile</string>
+    <string name="image">Image for post</string>
 
 
 </resources>

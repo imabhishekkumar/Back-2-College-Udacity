@@ -45,6 +45,9 @@ import org.aviran.cookiebar2.CookieBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -66,9 +69,8 @@ public class home_all extends Fragment {
     private OnFragmentInteractionListener mListener;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
-    private RecyclerView mRecyclerView;
-    private ConstraintLayout nothingToShow;
-    private RelativeLayout relativeLayout;
+    @BindView(R.id.recyclerView)
+    RecyclerView mRecyclerView;
     private FirebaseFirestore firebaseFirestore;
     private CollectionReference postReference;
     private FirebaseRecyclerAdapter firebaseRecyclerAdapter;
@@ -111,13 +113,11 @@ public class home_all extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_all, container, false);
+        ButterKnife.bind(this, view);
         mAuth = FirebaseAuth.getInstance();
-        mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mUser = mAuth.getCurrentUser();
-        nothingToShow = view.findViewById(R.id.nothingToShow);
-        relativeLayout = view.findViewById(R.id.relativeLayout);
         final List<ModelPost> modelList = new ArrayList<>();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -152,6 +152,7 @@ public class home_all extends Fragment {
         super.onStop();
         firebaseRecyclerAdapter.stopListening();
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -178,14 +179,15 @@ public class home_all extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (mAuth == null){
-            startActivity(new Intent(getContext(), RegisterActivity.class));}
-        else{
+        if (mAuth == null) {
+            startActivity(new Intent(getContext(), RegisterActivity.class));
+        } else {
 
             firebaseRecyclerAdapter.startListening();
         }
 
     }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

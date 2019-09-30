@@ -40,6 +40,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -61,7 +64,8 @@ public class home_department extends Fragment {
     private OnFragmentInteractionListener mListener;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.recyclerViewDept)
+    RecyclerView mRecyclerView;
     private FirebaseFirestore firebaseFirestore;
     private CollectionReference postReference;
     private FirebaseRecyclerAdapter firebaseRecyclerAdapter;
@@ -99,12 +103,11 @@ public class home_department extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_department, container, false);
+        ButterKnife.bind(this, view);
         mAuth = FirebaseAuth.getInstance();
-        mRecyclerView = view.findViewById(R.id.recyclerViewDept);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mUser = mAuth.getCurrentUser();
-        final List<ModelPost> modelList = new ArrayList<>();
         firebaseFirestore = FirebaseFirestore.getInstance();
         postReference = firebaseFirestore.collection("posts");
 
@@ -112,20 +115,17 @@ public class home_department extends Fragment {
                 .setPersistenceEnabled(true)
                 .build();
         documentReference = firebaseFirestore.collection("users").document(mUser.getUid());
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                department = task.getResult().get("department").toString();
-                query = postReference.whereArrayContains("postTo", department).orderBy("timestamp", Query.Direction.DESCENDING);
-                options = new FirestoreRecyclerOptions.Builder<ModelPost>()
-                        .setQuery(query, ModelPost.class)
-                        .build();
+        documentReference.get().addOnCompleteListener(task -> {
+            department = task.getResult().get("department").toString();
+            query = postReference.whereArrayContains("postTo", department).orderBy("timestamp", Query.Direction.DESCENDING);
+            options = new FirestoreRecyclerOptions.Builder<ModelPost>()
+                    .setQuery(query, ModelPost.class)
+                    .build();
 
-                firebaseRecyclerAdapter = new FirebaseRecyclerAdapter(options);
-                mRecyclerView.setAdapter(firebaseRecyclerAdapter);
+            firebaseRecyclerAdapter = new FirebaseRecyclerAdapter(options);
+            mRecyclerView.setAdapter(firebaseRecyclerAdapter);
 
-                firebaseRecyclerAdapter.startListening();
-            }
+            firebaseRecyclerAdapter.startListening();
         });
 
 

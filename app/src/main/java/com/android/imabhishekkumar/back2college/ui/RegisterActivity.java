@@ -49,6 +49,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -56,49 +58,54 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     FirebaseUser mUser;
     ProgressDialog progressdialog;
-    LinearLayout cardView;
     FirebaseFirestore db;
     DatePickerDialog.OnDateSetListener datePickerDialogListener;
     GoogleSignInClient mGoogleSignInClient;
     public static int RC_SIGN_IN = 1;
     public static String TAG = "Register Activity";
+
+    @BindView(R.id.frameLayout)
+    LinearLayout cardView;
+    @BindView(R.id.button)
     Button createAccountBtn;
-    EditText  registerNumberET, rollNumberET, mobileNumberET;
+    @BindView(R.id.registerNumber_text)
+    EditText registerNumberET;
+    @BindView(R.id.rollrNumber_text)
+    EditText rollNumberET;
+    @BindView(R.id.mobile_text)
+    EditText mobileNumberET;
+    @BindView(R.id.department_text)
     Spinner departmentET;
+    @BindView(R.id.imageButton)
     CircleImageView avatarImage;
+    @BindView(R.id.register_layout)
     ConstraintLayout registerLayout;
+    @BindView(R.id.registerDetails_layout)
     ConstraintLayout registerDetailsLayout;
-    TextView userEmailTV, greetingsTV, dateOfBirthET, dateContainer;
+    @BindView(R.id.userEmail_TV)
+    TextView userEmailTV;
+    @BindView(R.id.username_TV)
+    TextView greetingsTV;
+    @BindView(R.id.date_text)
+    TextView dateOfBirthET;
+    @BindView(R.id.date_container)
+    TextView dateContainer;
+    @BindView(R.id.close_btn_registerDetails)
+    ImageButton closeButtonDetails;
     String userEmail;
     String displayName, registerNumber, rollNumber, mobileNumber, department, date;
     String googleToken = "";
     Uri userImage;
-    ImageButton closeButtonDetails;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_register);
-        registerDetailsLayout = findViewById(R.id.registerDetails_layout);
-        registerLayout = findViewById(R.id.register_layout);
-        userEmailTV = findViewById(R.id.userEmail_TV);
-        avatarImage = findViewById(R.id.imageButton);
-        greetingsTV = findViewById(R.id.username_TV);
-        dateOfBirthET = findViewById(R.id.date_text);
-        dateContainer = findViewById(R.id.date_container);
-        createAccountBtn = findViewById(R.id.button);
+        ButterKnife.bind(this);
         registerLayout.setVisibility(View.VISIBLE);
         registerDetailsLayout.setVisibility(View.GONE);
-        registerNumberET = findViewById(R.id.registerNumber_text);
-        rollNumberET = findViewById(R.id.rollrNumber_text);
-        mobileNumberET = findViewById(R.id.mobile_text);
-        departmentET = findViewById(R.id.department_text);
         SignInButton signInButton = findViewById(R.id.sign_in_button);
-        closeButtonDetails = findViewById(R.id.close_btn_registerDetails);
-        // closeButtonGoogleSign = findViewById(R.id.close_btn_googleSignIN);
-        cardView = findViewById(R.id.frameLayout);
         registerLayout.setVisibility(View.VISIBLE);
         registerDetailsLayout.setVisibility(View.GONE);
 
@@ -113,92 +120,73 @@ public class RegisterActivity extends AppCompatActivity {
         progressdialog = new ProgressDialog(RegisterActivity.this);
 
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        signInButton.setOnClickListener(view -> {
 
-                progressdialog.setMessage("Signing you in ...");
-                progressdialog.setIndeterminate(true);
-                progressdialog.show();
-                signIn();
-            }
+            progressdialog.setMessage("Signing you in ...");
+            progressdialog.setIndeterminate(true);
+            progressdialog.show();
+            signIn();
         });
 
 
-        closeButtonDetails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                registerLayout.setVisibility(View.VISIBLE);
-                registerDetailsLayout.setVisibility(View.GONE);
-                //startActivity(new Intent(RegisterActivity.this, Welcome.class));
-            }
+        closeButtonDetails.setOnClickListener(view -> {
+            registerLayout.setVisibility(View.VISIBLE);
+            registerDetailsLayout.setVisibility(View.GONE);
         });
 
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
+        cardView.setOnClickListener(view -> {
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog dialog = new DatePickerDialog(RegisterActivity.this,
-                        datePickerDialogListener,
-                        year, month, day);
-                dialog.getWindow();
-                dialog.show();
-                dateContainer.setVisibility(View.VISIBLE);
-            }
+            DatePickerDialog dialog = new DatePickerDialog(RegisterActivity.this,
+                    datePickerDialogListener,
+                    year, month, day);
+            dialog.getWindow();
+            dialog.show();
+            dateContainer.setVisibility(View.VISIBLE);
         });
-        datePickerDialogListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
-                date = day + "/" + month + "/" + year;
-                dateOfBirthET.setText(date);
-            }
+        datePickerDialogListener = (datePicker, year, month, day) -> {
+            month = month + 1;
+            date = day + "/" + month + "/" + year;
+            dateOfBirthET.setText(date);
         };
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        createAccountBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mUser = mAuth.getCurrentUser();
-                registerNumber = registerNumberET.getText().toString();
-                rollNumber = rollNumberET.getText().toString();
-                mobileNumber = mobileNumberET.getText().toString();
-                department = departmentET.getSelectedItem().toString();
-                registerNumber = registerNumberET.getText().toString();
-                userEmail = userEmailTV.getText().toString();
-                progressdialog.setMessage("Creating account, please wait..");
-                progressdialog.setIndeterminate(true);
-                progressdialog.show();
-                addDataToDB();
+        createAccountBtn.setOnClickListener(view -> {
+            mUser = mAuth.getCurrentUser();
+            registerNumber = registerNumberET.getText().toString();
+            rollNumber = rollNumberET.getText().toString();
+            mobileNumber = mobileNumberET.getText().toString();
+            department = departmentET.getSelectedItem().toString();
+            registerNumber = registerNumberET.getText().toString();
+            userEmail = userEmailTV.getText().toString();
+            progressdialog.setMessage("Creating account, please wait..");
+            progressdialog.setIndeterminate(true);
+            progressdialog.show();
+            addDataToDB();
 
 
-            }
         });
     }
 
     private void subscribeToTopic() {
 
         FirebaseMessaging.getInstance().subscribeToTopic("B2CNotification")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        FirebaseMessaging.getInstance().subscribeToTopic(department);
-                        String msg = "Subscribed";
-                        if (!task.isSuccessful()) {
-                            msg = "Failed to subscribe";
-                            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.d(TAG, msg);
-                            startActivity(new Intent(RegisterActivity.this, Home.class));
-                            progressdialog.dismiss();
-                            finish();
-                        }
-
+                .addOnCompleteListener(task -> {
+                    FirebaseMessaging.getInstance().subscribeToTopic(department);
+                    String msg = "Subscribed";
+                    if (!task.isSuccessful()) {
+                        msg = "Failed to subscribe";
+                        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.d(TAG, msg);
+                        startActivity(new Intent(RegisterActivity.this, Home.class));
+                        progressdialog.dismiss();
+                        finish();
                     }
+
                 });
 
     }
@@ -219,19 +207,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         db.collection("users").document(mUser.getUid())
                 .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                        subscribeToTopic();
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                    subscribeToTopic();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
-                    }
-                });
+                .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
     }
 
 
@@ -296,33 +276,30 @@ public class RegisterActivity extends AppCompatActivity {
         googleToken = acct.getIdToken();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            boolean isNew = task.getResult().getAdditionalUserInfo().isNewUser();
-                            mUser = mAuth.getCurrentUser();
-                            if (isNew) {
-                                registerLayout.setVisibility(View.GONE);
-                                registerDetailsLayout.setVisibility(View.VISIBLE);
-                                userEmailTV.setText(userEmail);
-                                greetingsTV.setText("Welcome, " + displayName);
-                                Glide.with(getApplicationContext())
-                                        .load(userImage)
-                                        .into(avatarImage);
-                                setUser(displayName, userImage);
-                            } else {
-                                startActivity(new Intent(RegisterActivity.this, Home.class));
-                                finish();
-                            }
-
-                            progressdialog.dismiss();
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithCredential:success");
+                        boolean isNew = task.getResult().getAdditionalUserInfo().isNewUser();
+                        mUser = mAuth.getCurrentUser();
+                        if (isNew) {
+                            registerLayout.setVisibility(View.GONE);
+                            registerDetailsLayout.setVisibility(View.VISIBLE);
+                            userEmailTV.setText(userEmail);
+                            greetingsTV.setText("Welcome, " + displayName);
+                            Glide.with(getApplicationContext())
+                                    .load(userImage)
+                                    .into(avatarImage);
+                            setUser(displayName, userImage);
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            startActivity(new Intent(RegisterActivity.this, Home.class));
+                            finish();
                         }
+
+                        progressdialog.dismiss();
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
                     }
                 });
     }

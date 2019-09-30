@@ -44,28 +44,28 @@ public class Home extends AppCompatActivity implements home_all.OnFragmentIntera
     DocumentReference documentReference;
     FirebaseAuth mAuth;
     FirebaseUser user;
-    FloatingActionButton fab;
-    CoordinatorLayout coordinatorLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
+    @BindView(R.id.tabs)
+    TabLayout tabs;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+    @BindView(R.id.homeCoordinatorLayout)
+    CoordinatorLayout coordinatorLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         mAuth = FirebaseAuth.getInstance();
-        fab = findViewById(R.id.fab);
         toolbar.inflateMenu(R.menu.main_menu);
-        coordinatorLayout = findViewById(R.id.homeCoordinatorLayout);
         user = mAuth.getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        final FloatingActionButton fab = findViewById(R.id.fab);
         documentReference = firebaseFirestore.collection("users").document(user.getUid());
         documentReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -82,6 +82,7 @@ public class Home extends AppCompatActivity implements home_all.OnFragmentIntera
             if (item.getItemId() == R.id.signout) {
                 AuthUI.getInstance().signOut(getApplicationContext()).addOnCompleteListener(this,
                         task -> {
+                            mAuth.signOut();
                             startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
                             finish();
                         });

@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:minHeight="?actionBarSize"
-        android:padding="@dimen/appbar_padding"
         android:text="@string/app_name"
         android:textColor="@color/textColor"
         android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />

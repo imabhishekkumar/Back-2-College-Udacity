@@ -26,22 +26,13 @@ import android.widget.LinearLayout;
 
 import com.android.imabhishekkumar.back2college.R;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import org.aviran.cookiebar2.CookieBar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,25 +41,67 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class AddPost extends AppCompatActivity {
+    @BindView(R.id.edittextBG)
     ConstraintLayout background;
+    @BindView(R.id.addPostEditText)
     EditText editText;
-    ImageButton goBackBtn, addMediaBtn;
-    ImageButton  filterButton;
+    @BindView(R.id.back_Button)
+    ImageButton goBackBtn;
+    @BindView(R.id.addMedia)
+    ImageButton addMediaBtn;
+    @BindView(R.id.filters)
+    ImageButton filterButton;
+    @BindView(R.id.addPost)
     FloatingActionButton addButton;
+    @BindView(R.id.addPostCoordinatorLayout)
     CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.addPostWebView)
     ImageView wv;
+    @BindView(R.id.linearBottomSheet)
+    LinearLayout layoutBottomSheet;
+    @BindView(R.id.checkBoxes)
+    LinearLayout checkBoxes;
+    BottomSheetBehavior sheetBehavior;
+    @BindView(R.id.bs_submit_btn)
+    Button bsSubmit;
+    @BindView(R.id.allCB)
+    CheckBox all;
+    @BindView(R.id.aeroCB)
+    CheckBox aero;
+    @BindView(R.id.autoCB)
+    CheckBox auto;
+    @BindView(R.id.bioInfoCB)
+    CheckBox bioInfo;
+    @BindView(R.id.bioMedCB)
+    CheckBox bioMed;
+    @BindView(R.id.civilCB)
+    CheckBox civil;
+    @BindView(R.id.cseCB)
+    CheckBox cse;
+    @BindView(R.id.eceCB)
+    CheckBox ece;
+    @BindView(R.id.eeeCB)
+    CheckBox eee;
+    @BindView(R.id.eieCB)
+    CheckBox eie;
+    @BindView(R.id.etceCB)
+    CheckBox etce;
+    @BindView(R.id.itCB)
+    CheckBox it;
+    @BindView(R.id.mechCB)
+    CheckBox mech;
+    @BindView(R.id.mnpCB)
+    CheckBox mnp;
     FirebaseAuth auth;
     Uri mImageUri;
-    LinearLayout layoutBottomSheet, checkBoxes;
-    BottomSheetBehavior sheetBehavior;
-    Button bsSubmit;
     ProgressDialog mProgress;
-    CheckBox all, aero, auto, bioInfo, bioMed, civil, cse, ece, eee, eie, etce, it, mech, mnp;
     FirebaseFirestore firebaseFirestore;
     Map<String, Object> posts = new HashMap<>();
-    Map<String, Object> userposts = new HashMap<>();
-    String postText, postMultimediaURL, avatarURL;
+    String postText, postMultimediaURL;
     private StorageReference mStorageRef, postImages;
     private final static int gallerycode = 1;
     ArrayList<String> selectedDepartment = new ArrayList<>();
@@ -77,136 +110,79 @@ public class AddPost extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
-        background = findViewById(R.id.edittextBG);
-        editText = findViewById(R.id.addPostEditText);
+        ButterKnife.bind(this);
         auth = FirebaseAuth.getInstance();
-        goBackBtn = findViewById(R.id.back_Button);
-        addMediaBtn = findViewById(R.id.addMedia);
         mProgress = new ProgressDialog(this);
-        wv = findViewById(R.id.addPostWebView);
-        addButton = findViewById(R.id.addPost);
         mStorageRef = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        filterButton = findViewById(R.id.filters);
-        layoutBottomSheet = findViewById(R.id.linearBottomSheet);
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-        bsSubmit = findViewById(R.id.bs_submit_btn);
-        coordinatorLayout = findViewById(R.id.addPostCoordinatorLayout);
-        all = findViewById(R.id.allCB);
-        aero = findViewById(R.id.aeroCB);
-        auto = findViewById(R.id.autoCB);
-        bioInfo = findViewById(R.id.bioInfoCB);
-        bioMed = findViewById(R.id.bioMedCB);
-        civil = findViewById(R.id.civilCB);
-        cse = findViewById(R.id.cseCB);
-        ece = findViewById(R.id.eceCB);
-        eee = findViewById(R.id.eeeCB);
-        eie = findViewById(R.id.eieCB);
-        etce = findViewById(R.id.etceCB);
-        it = findViewById(R.id.itCB);
-        mech = findViewById(R.id.mechCB);
-        mnp = findViewById(R.id.mnpCB);
-        checkBoxes = findViewById(R.id.checkBoxes);
-
-        checkBoxes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                all.setChecked(false);
-            }
-        });
-        all.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                unCheckAll();
-            }
-        });
-
+        checkBoxes.setOnClickListener(view -> all.setChecked(false));
+        all.setOnClickListener(view -> unCheckAll());
         Log.d("Details", auth.getCurrentUser().getDisplayName());
         Log.d("Details", auth.getCurrentUser().getPhotoUrl().toString());
-        background.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showKeyboard();
-            }
+        background.setOnClickListener(view -> showKeyboard());
+        filterButton.setOnClickListener(view -> toggleBottomSheet());
+        addMediaBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/* video/* ");
+            startActivityForResult(intent, gallerycode);
         });
-        filterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleBottomSheet();
-            }
+        goBackBtn.setOnClickListener(view -> {
+            startActivity(new Intent(AddPost.this, Home.class));
+            finish();
         });
-        addMediaBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/* video/* ");
-                startActivityForResult(intent, gallerycode);
-            }
+        bsSubmit.setOnClickListener(view -> {
+            checkDepartments();
+            sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         });
-        goBackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(AddPost.this, Home.class));
-                finish();
-            }
-        });
-        bsSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkDepartments();
-                sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            }
-        });
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mProgress.setMessage("Adding Post");
-                mProgress.show();
-                postText = editText.getText().toString();
-                long yourmilliseconds = System.currentTimeMillis();
-                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
-                Date resultdate = new Date(yourmilliseconds);
-                String formatteddate = sdf.format(resultdate);
-                if (mImageUri != null) {
-                    postMultimediaURL = mImageUri.toString();
-                    posts.put("details", postText);
-                    posts.put("name", auth.getCurrentUser().getDisplayName());
-                    posts.put("avatar", auth.getCurrentUser().getPhotoUrl().toString());
-                    posts.put("time", formatteddate);
-                    posts.put("uid", auth.getCurrentUser().getUid());
-                    if (selectedDepartment == null || selectedDepartment.size() == 0) {
-                        posts.put("postTo", Arrays.asList("all"));
-                    } else {
-                        posts.put("postTo", selectedDepartment);
-                    }
-                    posts.put("timestamp", new Date().getTime());
-                    addImageToDB();
+        addButton.setOnClickListener(view -> {
+            mProgress.setMessage("Adding Post");
+            mProgress.show();
+            postText = editText.getText().toString();
+            long yourmilliseconds = System.currentTimeMillis();
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+            Date resultdate = new Date(yourmilliseconds);
+            String formatteddate = sdf.format(resultdate);
+            if (mImageUri != null) {
+                postMultimediaURL = mImageUri.toString();
+                posts.put("details", postText);
+                posts.put("name", auth.getCurrentUser().getDisplayName());
+                posts.put("avatar", auth.getCurrentUser().getPhotoUrl().toString());
+                posts.put("time", formatteddate);
+                posts.put("uid", auth.getCurrentUser().getUid());
+                if (selectedDepartment == null || selectedDepartment.size() == 0) {
+                    posts.put("postTo", Arrays.asList("all"));
                 } else {
-                    posts.put("details", postText);
-                    posts.put("name", auth.getCurrentUser().getDisplayName());
-                    posts.put("avatar", auth.getCurrentUser().getPhotoUrl().toString());
-                    posts.put("time", formatteddate);
-                    posts.put("uid", auth.getCurrentUser().getUid());
-                    if (selectedDepartment == null || selectedDepartment.size() == 0) {
-                        posts.put("postTo", Arrays.asList("all"));
-                    } else {
-                        posts.put("postTo", selectedDepartment);
-                    }
-                    posts.put("timestamp", new Date().getTime());
-                    pushToDB();
+                    posts.put("postTo", selectedDepartment);
                 }
-
-
+                posts.put("timestamp", new Date().getTime());
+                addImageToDB(mImageUri, posts);
+            } else {
+                posts.put("details", postText);
+                posts.put("name", auth.getCurrentUser().getDisplayName());
+                posts.put("avatar", auth.getCurrentUser().getPhotoUrl().toString());
+                posts.put("time", formatteddate);
+                posts.put("uid", auth.getCurrentUser().getUid());
+                if (selectedDepartment == null || selectedDepartment.size() == 0) {
+                    posts.put("postTo", Arrays.asList("all"));
+                } else {
+                    posts.put("postTo", selectedDepartment);
+                }
+                posts.put("timestamp", new Date().getTime());
+                pushToDB(posts);
             }
+
+
         });
-        if(!isConnectionAvailable()){
+        if (!isConnectionAvailable()) {
             Snackbar snackbar = Snackbar
                     .make(coordinatorLayout, "No internet connection available.", Snackbar.LENGTH_LONG);
             snackbar.show();
 
         }
     }
+
     public boolean isConnectionAvailable() {
 
         ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -214,6 +190,7 @@ public class AddPost extends AppCompatActivity {
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
 
     }
+
     private void unCheckAll() {
         selectedDepartment.clear();
         aero.setChecked(false);
@@ -287,27 +264,18 @@ public class AddPost extends AppCompatActivity {
         }
     }
 
-    private void pushToDB() {
+    private void pushToDB(Map<String, Object> posts) {
         firebaseFirestore.collection("posts").add(posts)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        String chatId = documentReference.getId();
-                        firebaseFirestore.collection("users").document(auth.getUid()).collection("Timeline").document(chatId).set(posts);
-                        mProgress.dismiss();
-                        sendNotification();
-                        startActivity(new Intent(AddPost.this, Home.class));
-                        finish();
-                    }
+                .addOnSuccessListener(documentReference -> {
+                    String chatId = documentReference.getId();
+                    firebaseFirestore.collection("users").document(auth.getUid()).collection("Timeline").document(chatId).set(posts);
+                    mProgress.dismiss();
+                    startActivity(new Intent(AddPost.this, Home.class));
+                    finish();
                 });
 
     }
 
-    private void sendNotification() {
-        FirebaseFunctions.getInstance()
-                .getHttpsCallable("createTodo");
-
-    }
 
     public void toggleBottomSheet() {
         all.setChecked(true);
@@ -322,27 +290,21 @@ public class AddPost extends AppCompatActivity {
     }
 
 
-    private void addImageToDB() {
+    private void addImageToDB(Uri mImageUri, Map<String, Object> posts) {
         postImages = mStorageRef.child("media/").child(mImageUri.getLastPathSegment());
-        postImages.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-                return postImages.getDownloadUrl();
+        postImages.putFile(mImageUri).continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
             }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    posts.put("multimediaURL", downloadUri.toString());
-                    pushToDB();
+            return postImages.getDownloadUrl();
+        }).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Uri downloadUri = task.getResult();
+                posts.put("multimediaURL", downloadUri.toString());
+                pushToDB(posts);
 
-                } else {
-                    Log.d("upload failed: ", task.getException().getMessage());
-                }
+            } else {
+                Log.d("upload failed: ", task.getException().getMessage());
             }
         });
     }
