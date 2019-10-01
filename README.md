@@ -25,9 +25,7 @@ RecyclerView.
 - Notification will be sent to users about a new post using Firebase Cloud Functions and
 Firebase Cloud Messaging.
 - Users will be able share posts using the IntentService.
-## Task 5: Define test cases
-- Define unit tests and integration tests.
-## Task 6: Create build variants
+## Task 5: Create build variants
 - Create required build variants
 - Create keystore for release apk
 - Build and deploy application to Play Store
