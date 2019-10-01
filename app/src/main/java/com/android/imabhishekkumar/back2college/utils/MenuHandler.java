@@ -13,6 +13,7 @@ import android.media.Image;
 import android.net.Uri;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -33,6 +34,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -45,6 +47,8 @@ public class MenuHandler implements PopupMenu.OnMenuItemClickListener {
     private String parentUId;
     private Context context;
     private ModelPost modelPost;
+    FirebaseAuth mAuth;
+
 
     public MenuHandler(int positon, String parentUId, Context context, ModelPost modelPost) {
         this.position = positon;
@@ -56,58 +60,65 @@ public class MenuHandler implements PopupMenu.OnMenuItemClickListener {
 
     @Override
     public boolean onMenuItemClick(final MenuItem item) {
+        mAuth = FirebaseAuth.getInstance();
+
         switch (item.getItemId()) {
 
             case R.id.delete:
-                final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-                TextView title = new TextView(context);
-                // Title Properties
-                title.setText(R.string.confirmDelete);
-                title.setPadding(8, 8, 8, 8);   // Set Position
-                title.setGravity(Gravity.CENTER);
-                title.setTextColor(Color.BLACK);
-                title.setTextSize(20);
-                alertDialog.setCustomTitle(title);
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        db = FirebaseFirestore.getInstance().collection("posts").document(parentUId);
-                        db.delete()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(context, "Successfully deleted!", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(context, "Failed to delete.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                    }
-                });
+                if (modelPost.getUid().equals(mAuth.getUid())) {
+                    final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                    TextView title = new TextView(context);
+                    // Title Properties
+                    title.setText(R.string.confirmDelete);
+                    title.setPadding(8, 8, 8, 8);   // Set Position
+                    title.setGravity(Gravity.CENTER);
+                    title.setTextColor(Color.BLACK);
+                    title.setTextSize(20);
+                    alertDialog.setCustomTitle(title);
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            db = FirebaseFirestore.getInstance().collection("posts").document(parentUId);
+                            db.delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(context, "Successfully deleted!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(context, "Failed to delete.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    });
 
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        alertDialog.dismiss();
-                    }
-                });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+                        }
+                    });
 
-                new Dialog(context);
-                alertDialog.show();
-                final Button okBT = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-                LinearLayout.LayoutParams neutralBtnLP = (LinearLayout.LayoutParams) okBT.getLayoutParams();
-                neutralBtnLP.gravity = Gravity.FILL_HORIZONTAL;
-                okBT.setPadding(50, 10, 10, 10);   // Set Position
-                okBT.setTextColor(Color.BLACK);
-                okBT.setLayoutParams(neutralBtnLP);
+                    new Dialog(context);
+                    alertDialog.show();
+                    final Button okBT = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                    LinearLayout.LayoutParams neutralBtnLP = (LinearLayout.LayoutParams) okBT.getLayoutParams();
+                    neutralBtnLP.gravity = Gravity.FILL_HORIZONTAL;
+                    okBT.setPadding(50, 10, 10, 10);   // Set Position
+                    okBT.setTextColor(Color.BLACK);
+                    okBT.setLayoutParams(neutralBtnLP);
 
-                final Button cancelBT = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                LinearLayout.LayoutParams negBtnLP = (LinearLayout.LayoutParams) okBT.getLayoutParams();
-                negBtnLP.gravity = Gravity.FILL_HORIZONTAL;
-                cancelBT.setTextColor(Color.BLACK);
-                cancelBT.setLayoutParams(negBtnLP);
+                    final Button cancelBT = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                    LinearLayout.LayoutParams negBtnLP = (LinearLayout.LayoutParams) okBT.getLayoutParams();
+                    negBtnLP.gravity = Gravity.FILL_HORIZONTAL;
+                    cancelBT.setTextColor(Color.BLACK);
+                    cancelBT.setLayoutParams(negBtnLP);
 
+
+                }else{
+                    Toast.makeText(context,"You don't have permission to delete.",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.pin:
                 SharedPreferences pref = context.getSharedPreferences("MyPref", 0); // 0 - for private mode

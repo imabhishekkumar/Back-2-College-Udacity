@@ -5,8 +5,6 @@ admin.initializeApp(functions.config().firebase);
 exports.newPostAdded = functions.firestore
     .document('posts/{postId}')
     .onCreate((snap, context) => {
-        // Get an object representing the document
-        // e.g. {'name': 'Marie', 'age': 66}
         const newValue = snap.data();
         const name = newValue.name;
       var postTo = newValue.postTo;
@@ -15,7 +13,7 @@ exports.newPostAdded = functions.firestore
       console.log("PostTo= "+ postTo);
       console.log("Message= "+ message)
 
-      if(postTo==='all'){
+      
         const payload = {
             notification: {
               title: name+" added a new post.",
@@ -26,6 +24,6 @@ exports.newPostAdded = functions.firestore
         return admin.messaging().sendToTopic("B2CNotification", payload);
          
     
-      }
+      
 
     });

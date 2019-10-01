@@ -200,7 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
         user.put("department", department);
         user.put("dateOfBirth", date);
         user.put("email", userEmail);
-        user.put("verified", "false");
+        user.put("verified", "true");
         user.put("userId", mUser.getUid());
         user.put("displayName", displayName);
         user.put("displayImage", userImage.toString());
