@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword 'udacitycapstone'
+            storeFile file("$rootDir/keystore.jks")
+            storePassword 'udacitycapstone'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.android.imabhishekkumar.back2college"
@@ -20,6 +28,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
