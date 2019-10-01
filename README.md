@@ -28,4 +28,3 @@ Firebase Cloud Messaging.
 ## Task 5: Create build variants
 - Create required build variants
 - Create keystore for release apk
-- Build and deploy application to Play Store
