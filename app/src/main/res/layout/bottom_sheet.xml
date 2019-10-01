@@ -17,12 +17,12 @@
         android:textAlignment="center"
         android:gravity="center_vertical"
         android:textSize="22sp"
-        android:text="Select department(s)"/>
+        android:text="@string/select_department_s"/>
     <CheckBox
         android:id="@+id/allCB"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select ALL"
+        android:text="@string/select_all"
         />
 
     <View
@@ -182,5 +182,5 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:textColor="@color/textColor"
-        android:text="Submit" />
+        android:text="@string/submit" />
 </LinearLayout>

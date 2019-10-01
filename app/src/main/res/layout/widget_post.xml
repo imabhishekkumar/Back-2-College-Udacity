@@ -12,6 +12,7 @@
     <ImageView
         android:id="@+id/widget_avatar"
         android:layout_width="30dp"
+        android:contentDescription="@string/avatar"
         android:layout_height="30dp"
         android:src="@drawable/profile_default"
         android:layout_margin="16dp"/>
@@ -38,6 +39,7 @@
     android:layout_marginTop="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:contentDescription="@string/widget_img"
     android:scaleType="centerCrop"
     android:src="@drawable/loading"/>
 </LinearLayout>

@@ -13,6 +13,7 @@
             android:id="@+id/widget_ni_avatar"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:contentDescription="@string/avatar"
             android:src="@drawable/profile_default"
             android:layout_margin="16dp"/>
         <TextView

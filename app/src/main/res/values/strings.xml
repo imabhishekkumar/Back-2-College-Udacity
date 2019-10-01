@@ -40,6 +40,24 @@
     <string name="photo_view">This is photoView</string>
     <string name="profileQR">QR for profile</string>
     <string name="image">Image for post</string>
+    <string name="abhishek_kumar">Abhishek Kumar</string>
+    <string name="splash">Splash</string>
+    <string name="close_btn">Close Btn</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="complete_your_profile">Complete your profile.</string>
+    <string name="basic_information">Basic Information</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="back_btn">Back</string>
+    <string name="filter">Filter</string>
+    <string name="addMedia">Add Media</string>
+    <string name="what_s_on_your_mind">What\'s on your mind?</string>
+    <string name="addpostImg">Add Image</string>
+    <string name="select_all">Select ALL</string>
+    <string name="select_department_s">Select department(s)</string>
+    <string name="submit">Submit</string>
+    <string name="more_options">More Options</string>
+    <string name="avatar">Avatar</string>
+    <string name="widget_img">Image</string>
 
 
 </resources>
