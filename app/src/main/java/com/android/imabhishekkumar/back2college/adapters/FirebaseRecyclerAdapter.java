@@ -63,20 +63,12 @@ public class FirebaseRecyclerAdapter extends FirestoreRecyclerAdapter<ModelPost,
         holder.name.setText(username);
         holder.post.setText(postContent);
         holder.time.setReferenceTime(timestamp);
-        holder.webView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), PhotoView.class);
-                intent.putExtra("imageUrl", model.getMultimediaURL());
-                view.getContext().startActivity(intent);
-            }
+        holder.webView.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), PhotoView.class);
+            intent.putExtra("imageUrl", model.getMultimediaURL());
+            view.getContext().startActivity(intent);
         });
-        holder.moreBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopupMenu(view, position,parentUId,model);
-            }
-        });
+        holder.moreBtn.setOnClickListener(view -> showPopupMenu(view, position,parentUId,model));
     }
 
     @NonNull

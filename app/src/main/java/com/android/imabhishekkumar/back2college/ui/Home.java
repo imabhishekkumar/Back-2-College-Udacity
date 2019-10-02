@@ -94,7 +94,7 @@ public class Home extends AppCompatActivity implements home_all.OnFragmentIntera
         fab.setOnClickListener(view -> startActivity(new Intent(Home.this, AddPost.class)));
         if (!isConnectionAvailable()) {
             Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, "No internet connection available.", Snackbar.LENGTH_LONG);
+                    .make(coordinatorLayout, R.string.noInternet, Snackbar.LENGTH_LONG);
             snackbar.show();
         }
     }

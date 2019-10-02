@@ -176,12 +176,10 @@ public class RegisterActivity extends AppCompatActivity {
         FirebaseMessaging.getInstance().subscribeToTopic("B2CNotification")
                 .addOnCompleteListener(task -> {
                     FirebaseMessaging.getInstance().subscribeToTopic(department);
-                    String msg = "Subscribed";
+
                     if (!task.isSuccessful()) {
-                        msg = "Failed to subscribe";
-                        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.notSubscribed, Toast.LENGTH_SHORT).show();
                     } else {
-                        Log.d(TAG, msg);
                         startActivity(new Intent(RegisterActivity.this, Home.class));
                         progressdialog.dismiss();
                         finish();
@@ -248,8 +246,8 @@ public class RegisterActivity extends AppCompatActivity {
                 // Google Sign In failed, update UI appropriately
                 progressdialog.dismiss();
                 CookieBar.build(RegisterActivity.this)
-                        .setTitle("Google sign in failed")
-                        .setMessage("Please check your internet connection and try again.")
+                        .setTitle(R.string.google_sign_failed)
+                        .setMessage(R.string.check_connection)
                         .setBackgroundColor(R.color.colorPrimary)
                         .setCookiePosition(CookieBar.TOP)
                         .show();
@@ -286,7 +284,7 @@ public class RegisterActivity extends AppCompatActivity {
                             registerLayout.setVisibility(View.GONE);
                             registerDetailsLayout.setVisibility(View.VISIBLE);
                             userEmailTV.setText(userEmail);
-                            greetingsTV.setText("Welcome, " + displayName);
+                            greetingsTV.setText(displayName);
                             Glide.with(getApplicationContext())
                                     .load(userImage)
                                     .into(avatarImage);

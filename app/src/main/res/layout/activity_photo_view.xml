@@ -7,17 +7,27 @@
     android:background="#000"
     tools:context=".ui.PhotoView">
 
+    <Button
+        android:id="@+id/photosaveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/click_to_save"
+        android:background="@color/textColorBlack"
+        android:textColor="@color/textColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photoView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
+        android:layout_height="500dp"
         android:layout_marginBottom="8dp"
-        android:scaleType="center"
         android:contentDescription="@string/photo_view"
+        android:scaleType="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/photosaveBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

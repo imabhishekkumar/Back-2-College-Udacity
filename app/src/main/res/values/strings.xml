@@ -58,6 +58,17 @@
     <string name="more_options">More Options</string>
     <string name="avatar">Avatar</string>
     <string name="widget_img">Image</string>
+    <string name="addpost">Add post</string>
+    <string name="new_post">New Post</string>
+    <string name="noInternet">No internet connection available.</string>
+    <string name="subsribed">Subscribed</string>
+    <string name="notSubscribed">Not subscribed to notifications.</string>
+    <string name="google_sign_failed">Google sign in failed</string>
+    <string name="check_connection">Please check your internet connection and try again.</string>
+    <string name="welcome">Welcome,</string>
+    <string name="addingPost">Adding Post\"</string>
+    <string name="click_to_save">Click to save</string>
+    <string name="will_be_saved">Image will be saved in background</string>
 
 
 </resources>

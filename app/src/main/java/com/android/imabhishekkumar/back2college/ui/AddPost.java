@@ -98,7 +98,6 @@ public class AddPost extends AppCompatActivity {
     CheckBox mnp;
     FirebaseAuth auth;
     Uri mImageUri;
-    ProgressDialog mProgress;
     FirebaseFirestore firebaseFirestore;
     Map<String, Object> posts = new HashMap<>();
     String postText, postMultimediaURL;
@@ -112,7 +111,6 @@ public class AddPost extends AppCompatActivity {
         setContentView(R.layout.activity_add_post);
         ButterKnife.bind(this);
         auth = FirebaseAuth.getInstance();
-        mProgress = new ProgressDialog(this);
         mStorageRef = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
@@ -137,8 +135,6 @@ public class AddPost extends AppCompatActivity {
             sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         });
         addButton.setOnClickListener(view -> {
-            mProgress.setMessage("Adding Post");
-            mProgress.show();
             postText = editText.getText().toString();
             long yourmilliseconds = System.currentTimeMillis();
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
@@ -177,7 +173,7 @@ public class AddPost extends AppCompatActivity {
         });
         if (!isConnectionAvailable()) {
             Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, "No internet connection available.", Snackbar.LENGTH_LONG);
+                    .make(coordinatorLayout, R.string.noInternet, Snackbar.LENGTH_LONG);
             snackbar.show();
 
         }
@@ -269,7 +265,6 @@ public class AddPost extends AppCompatActivity {
                 .addOnSuccessListener(documentReference -> {
                     String chatId = documentReference.getId();
                     firebaseFirestore.collection("users").document(auth.getUid()).collection("Timeline").document(chatId).set(posts);
-                    mProgress.dismiss();
                     startActivity(new Intent(AddPost.this, Home.class));
                     finish();
                 });
